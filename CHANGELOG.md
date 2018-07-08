@@ -17,3 +17,7 @@ All notable changes to BrightComponents/Common will be documented in this file
 ## 0.1.3 - 2018-07-07
 
 - Add CustomRule abstract class.
+
+## 0.1.4 - 2018-07-07
+
+- Revert addition of CustomRule class.
