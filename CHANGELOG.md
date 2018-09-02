@@ -21,3 +21,7 @@ All notable changes to BrightComponents/Common will be documented in this file
 ## 0.1.4 - 2018-07-07
 
 - Revert addition of CustomRule class.
+
+## 1.0.0-beta.1 - 2018-09-02
+
+- First beta release. Features locked.
