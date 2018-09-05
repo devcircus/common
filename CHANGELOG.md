@@ -4,24 +4,28 @@ All notable changes to BrightComponents/Common will be documented in this file
 
 ## 0.1.0 - 2018-07-03
 
-- Initial release
+-   Initial release
 
 ## 0.1.1 - 2018-07-03
 
-- Add status to payload.
+-   Add status to payload.
 
 ## 0.1.2 - 2018-07-03
 
-- Revert addition of status.
+-   Revert addition of status.
 
 ## 0.1.3 - 2018-07-07
 
-- Add CustomRule abstract class.
+-   Add CustomRule abstract class.
 
 ## 0.1.4 - 2018-07-07
 
-- Revert addition of CustomRule class.
+-   Revert addition of CustomRule class.
 
 ## 1.0.0-beta.1 - 2018-09-02
 
-- First beta release. Features locked.
+-   First beta release. Features locked.
+
+## 1.0.0-beta.1.1 - 2018-09-05
+
+-   Upgrade illuminate/support dependency to 5.7. Bump PHP version.
