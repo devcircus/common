@@ -4,7 +4,7 @@ namespace BrightComponents\Common\Payloads;
 
 use BrightComponents\Common\Payloads\Contracts\PayloadContract;
 
-class Payload extends PayloadContract
+class Payload implements PayloadContract
 {
     /** @var string */
     private $status;

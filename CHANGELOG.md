@@ -37,3 +37,7 @@ All notable changes to BrightComponents/Common will be documented in this file
 ## 1.0.0-beta.1.3 - 2019-03-21
 
 -   Update Payload class to a more complete version.
+
+## 1.0.0-beta.1.4 - 2019-03-21
+
+-   Correct Payload class to "implement" contract, not extend.
