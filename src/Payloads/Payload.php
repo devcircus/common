@@ -23,6 +23,9 @@ class Payload implements PayloadContract
     /** @var array */
     private $messages = [];
 
+    /** @var string */
+    private $wrapper = '';
+
     /**
      * Create a copy of the payload with the status.
      *
@@ -76,14 +79,14 @@ class Payload implements PayloadContract
     /**
      * Create a copy of the payload with output array.
      *
-     * @param  array  $output
+     * @param  mixed  $output
      *
      * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
      */
-    public function withOutput(array $output)
+    public function withOutput($output)
     {
         $copy = clone $this;
-        $copy->output = $this->getArrayableItems($output);
+        $copy->output = $this->wrapper ? ['data' => $this->getArrayableItems($output)] : $this->getArrayableItems($output);
 
         return $copy;
     }
@@ -121,6 +124,11 @@ class Payload implements PayloadContract
     public function getMessages()
     {
         return $this->messages;
+    }
+
+    public function setWrapper(string $wrapper)
+    {
+        $this->wrapper = $wrapper;
     }
 
     public function getArrayableItems($input)
