@@ -126,11 +126,39 @@ class Payload implements PayloadContract
         return $this->messages;
     }
 
+    /**
+     * Set a wrapper for payload output.
+     *
+     * @param  string  $wrapper
+     *
+     * @return $this
+     */
     public function setWrapper(string $wrapper)
     {
         $this->wrapper = $wrapper;
+
+        return $this;
     }
 
+    /**
+     * Set a wrapper for payload output. Alias for setWrapper.
+     *
+     * @param  string  $wrapper
+     *
+     * @return $this
+     */
+    public function wrap(string $wrapper)
+    {
+        return $this->setWrapper($wrapper);
+    }
+
+    /**
+     * Get the arrayable items.
+     *
+     * @param  mixed  $input
+     *
+     * @return array
+     */
     public function getArrayableItems($input)
     {
         if (is_array($input)) {
