@@ -45,3 +45,8 @@ All notable changes to BrightComponents/Common will be documented in this file
 ## 1.0.0-beta.1.5 - 2019-03-21
 
 -   Handle the case when a collection is passed to the payload.
+
+## 1.0.0-beta.1.6 - 2019-03-21
+
+-   Add optional wrapper for payload output.
+-   Add setter for wrapper.
