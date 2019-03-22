@@ -2,6 +2,11 @@
 
 namespace BrightComponents\Common\Payloads;
 
+use Traversable;
+use JsonSerializable;
+use Illuminate\Support\Collection;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Contracts\Support\Arrayable;
 use BrightComponents\Common\Payloads\Contracts\PayloadContract;
 
 class Payload implements PayloadContract
@@ -78,7 +83,7 @@ class Payload implements PayloadContract
     public function withOutput(array $output)
     {
         $copy = clone $this;
-        $copy->output = $output;
+        $copy->output = $this->getArrayableItems($output);
 
         return $copy;
     }
@@ -116,5 +121,24 @@ class Payload implements PayloadContract
     public function getMessages()
     {
         return $this->messages;
+    }
+
+    public function getArrayableItems($input)
+    {
+        if (is_array($input)) {
+            return $input;
+        } elseif ($input instanceof Collection) {
+            return $input->all();
+        } elseif ($input instanceof Arrayable) {
+            return $input->toArray();
+        } elseif ($input instanceof Jsonable) {
+            return json_decode($input->toJson(), true);
+        } elseif ($input instanceof JsonSerializable) {
+            return $input->jsonSerialize();
+        } elseif ($input instanceof Traversable) {
+            return iterator_to_array($input);
+        }
+
+        return (array) $input;
     }
 }
