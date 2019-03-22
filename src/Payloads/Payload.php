@@ -77,7 +77,7 @@ class Payload implements PayloadContract
     }
 
     /**
-     * Create a copy of the payload with output array.
+     * Create a copy of the payload with output.
      *
      * @param  mixed  $output
      *

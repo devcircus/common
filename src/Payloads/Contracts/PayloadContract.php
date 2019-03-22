@@ -37,13 +37,13 @@ interface PayloadContract extends Status
     public function getInput();
 
     /**
-     * Create a copy of the payload with output array.
+     * Create a copy of the payload with output.
      *
-     * @param  array  $output
+     * @param  mixed  $output
      *
      * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
      */
-    public function withOutput(array $output);
+    public function withOutput($output);
 
     /**
      * Get output array from the payload.
