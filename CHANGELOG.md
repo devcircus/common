@@ -50,3 +50,7 @@ All notable changes to BrightComponents/Common will be documented in this file
 
 -   Add optional wrapper for payload output.
 -   Add setter for wrapper.
+
+## 1.0.0-beta.1.7 - 2019-03-21
+
+-   Update interface for payload.
