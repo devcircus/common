@@ -41,3 +41,7 @@ All notable changes to BrightComponents/Common will be documented in this file
 ## 1.0.0-beta.1.4 - 2019-03-21
 
 -   Correct Payload class to "implement" contract, not extend.
+
+## 1.0.0-beta.1.5 - 2019-03-21
+
+-   Handle the case when a collection is passed to the payload.
