@@ -1,7 +1,7 @@
 {
     "name": "bright-components/common",
     "description": "Common components for BrightComponents packages.",
-    "version": "1.0.0-beta.1.7",
+    "version": "1.0.0-beta.1.8",
     "keywords": [
         "bright-components",
         "contracts",
@@ -13,7 +13,7 @@
         {
             "name": "Clayton Stone",
             "email": "clay@phpstage.com",
-            "homepage": "https://codestage.co",
+            "homepage": "https://phpstage.com",
             "role": "Developer"
         }
     ],

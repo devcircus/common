@@ -67,4 +67,31 @@ interface PayloadContract extends Status
      * @return array
      */
     public function getMessages();
+
+    /**
+     * Set a wrapper for payload input.
+     *
+     * @param  string  $wrapper
+     *
+     * @return $this
+     */
+    public function setInputWrapper(string $wrapper);
+
+    /**
+     * Set a wrapper for payload output.
+     *
+     * @param  string  $wrapper
+     *
+     * @return $this
+     */
+    public function setOutputWrapper(string $wrapper);
+
+    /**
+     * Set a wrapper for payload messages.
+     *
+     * @param  string  $wrapper
+     *
+     * @return $this
+     */
+    public function setMessagesWrapper(string $wrapper);
 }
