@@ -69,3 +69,7 @@ All notable changes to BrightComponents/Common will be documented in this file
 
 -   Make HTTP status codes ints instead of strings.
 -   Start review of code, preparing for 1.0 release.
+
+## 1.0.0 - 2019-03-23
+
+-   Initial stable release.
