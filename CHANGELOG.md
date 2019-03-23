@@ -64,3 +64,8 @@ All notable changes to BrightComponents/Common will be documented in this file
 ## 1.0.0-beta.1.9 - 2019-03-23
 
 -   Optionally add payload input to response.
+
+## 1.0.0-beta.2.0 - 2019-03-23
+
+-   Make HTTP status codes ints instead of strings.
+-   Start review of code, preparing for 1.0 release.
