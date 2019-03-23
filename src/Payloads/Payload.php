@@ -24,7 +24,13 @@ class Payload implements PayloadContract
     private $messages = [];
 
     /** @var string */
-    private $wrapper = '';
+    private $outputWrapper = 'data';
+
+    /** @var string */
+    private $inputWrapper = 'input';
+
+    /** @var string */
+    private $messagesWrapper = 'messages';
 
     /**
      * Create a copy of the payload with the status.
@@ -55,13 +61,14 @@ class Payload implements PayloadContract
      * Create a copy of the payload with input array.
      *
      * @param  array  $input
+     * @param  bool  $wrap
      *
      * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
      */
-    public function withInput(array $input)
+    public function withInput(array $input, bool $wrap = true)
     {
         $copy = clone $this;
-        $copy->input = $input;
+        $copy->input = $wrap && $this->inputWrapper ? [$this->inputWrapper => $input] : $input;
 
         return $copy;
     }
@@ -80,13 +87,14 @@ class Payload implements PayloadContract
      * Create a copy of the payload with output.
      *
      * @param  mixed  $output
+     * @param  bool  $wrap
      *
      * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
      */
-    public function withOutput($output)
+    public function withOutput($output, bool $wrap = true)
     {
         $copy = clone $this;
-        $copy->output = $this->wrapper ? ['data' => $this->getArrayableItems($output)] : $this->getArrayableItems($output);
+        $copy->output = $wrap && $this->outputWrapper ? [$this->outputWrapper => $this->getArrayableItems($output)] : $this->getArrayableItems($output);
 
         return $copy;
     }
@@ -105,13 +113,14 @@ class Payload implements PayloadContract
      * Create a copy of the payload with messages array.
      *
      * @param  array  $output
+     * @param  bool  $wrap
      *
      * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
      */
-    public function withMessages(array $messages)
+    public function withMessages(array $messages, bool $wrap = true)
     {
         $copy = clone $this;
-        $copy->messages = $messages;
+        $copy->messages = $wrap && $this->messagesWrapper ? [$this->messagesWrapper => $messages] : $messages;
 
         return $copy;
     }
@@ -133,9 +142,9 @@ class Payload implements PayloadContract
      *
      * @return $this
      */
-    public function setWrapper(string $wrapper)
+    public function setOutputWrapper(string $wrapper)
     {
-        $this->wrapper = $wrapper;
+        $this->outputWrapper = $wrapper;
 
         return $this;
     }
@@ -147,9 +156,61 @@ class Payload implements PayloadContract
      *
      * @return $this
      */
-    public function wrap(string $wrapper)
+    public function wrapOutput(string $wrapper)
     {
-        return $this->setWrapper($wrapper);
+        return $this->setOutputWrapper($wrapper);
+    }
+
+    /**
+     * Set a wrapper for payload output.
+     *
+     * @param  string  $wrapper
+     *
+     * @return $this
+     */
+    public function setInputWrapper(string $wrapper)
+    {
+        $this->inputWrapper = $wrapper;
+
+        return $this;
+    }
+
+    /**
+     * Set a wrapper for payload output. Alias for setWrapper.
+     *
+     * @param  string  $wrapper
+     *
+     * @return $this
+     */
+    public function wrapInput(string $wrapper)
+    {
+        return $this->setInputWrapper($wrapper);
+    }
+
+    /**
+     * Set a wrapper for payload output.
+     *
+     * @param  string  $wrapper
+     *
+     * @return $this
+     */
+    public function setMessagesWrapper(string $wrapper)
+    {
+        $this->messagesWrapper = $wrapper;
+
+        return $this;
+    }
+
+    /**
+     * Set a wrapper for payload output. Alias for setWrapper.
+     *
+     * @param  string  $wrapper
+     *
+     * @return $this
+     */
+    public function wrapMessages(string $wrapper)
+    {
+        return $this->setMessagesWrapper($wrapper);
     }
 
     /**
@@ -176,5 +237,21 @@ class Payload implements PayloadContract
         }
 
         return (array) $input;
+    }
+
+    /**
+     * Handle dynamic property getters for a payload.
+     *
+     * @param  mixed  $property
+     *
+     * @return mixed
+     */
+    public function __get($property)
+    {
+        if ($this->outputWrapper) {
+            return isset($this->getOutput()[$this->outputWrapper][$property]) ? $this->getOutput()[$this->outputWrapper][$property] : null;
+        }
+
+        return isset($this->getOutput()[$property]) ? $this->getOutput()[$property] : null;
     }
 }
