@@ -14,11 +14,13 @@ class Response
      */
     public function jsonWithPayload()
     {
-        return function (PayloadContract $payload) {
-            return ResponseFactory::json([
-                $payload->getOutput(),
-                $payload->getMessages(),
-            ], $payload->getStatus());
+        return function (PayloadContract $payload, bool $withInput = false) {
+            $response = array_merge($payload->getOutput(), $payload->getMessages());
+            if ($withInput) {
+                $response = array_merge($response, $payload->getInput());
+            }
+
+            return ResponseFactory::json($response, $payload->getStatus());
         };
     }
 

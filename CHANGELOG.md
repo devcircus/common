@@ -60,3 +60,7 @@ All notable changes to BrightComponents/Common will be documented in this file
 -   Enable easier converting of payloads to responses.
     -   Add wrapper keys for payload output, input, and messages.
     -   Add Response macros for returning json response with payload and returning a view response with payload.
+
+## 1.0.0-beta.1.9 - 2019-03-23
+
+-   Optionally add payload input to response.
