@@ -73,3 +73,7 @@ All notable changes to BrightComponents/Common will be documented in this file
 ## 1.0.0 - 2019-03-23
 
 -   Initial stable release.
+
+## 2.0.0 - 2019-03-28
+
+-   Completely overhauled how the Payload class functions.

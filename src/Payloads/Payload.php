@@ -2,55 +2,47 @@
 
 namespace BrightComponents\Common\Payloads;
 
-use Traversable;
+use ArrayAccess;
 use JsonSerializable;
-use Illuminate\Support\Collection;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Support\Arrayable;
 use BrightComponents\Common\Payloads\Contracts\PayloadContract;
 
-class Payload implements PayloadContract
+class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonable, Arrayable
 {
-    /** @var string */
+    /** @var int */
     private $status;
 
-    /** @var array */
-    private $input = [];
-
-    /** @var array */
-    private $output = [];
+    /** @var mixed */
+    private $output;
 
     /** @var array */
     private $messages = [];
 
-    /** @var string */
-    private $outputWrapper = 'data';
-
-    /** @var string */
-    private $inputWrapper = 'input';
+    /** @var string|null */
+    private $outputWrapper = null;
 
     /** @var string */
     private $messagesWrapper = 'messages';
 
     /**
-     * Create a copy of the payload with the status.
+     * Set the Payload status.
      *
-     * @param  string  $status
+     * @param  int  $status
      *
-     * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
+     * @return $this
      */
-    public function withStatus($status)
+    public function setStatus($status)
     {
-        $copy = clone $this;
-        $copy->status = $status;
-
-        return $copy;
+        return tap($this, function ($instance) use ($status) {
+            $instance->status = $status;
+        });
     }
 
     /**
      * Get the status of the payload.
      *
-     * @return string
+     * @return int
      */
     public function getStatus()
     {
@@ -58,71 +50,17 @@ class Payload implements PayloadContract
     }
 
     /**
-     * Create a copy of the payload with input array.
-     *
-     * @param  array  $input
-     * @param  bool  $wrap
-     *
-     * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
-     */
-    public function withInput(array $input, bool $wrap = true)
-    {
-        $copy = clone $this;
-        $copy->input = $wrap && $this->inputWrapper ? [$this->inputWrapper => $input] : $input;
-
-        return $copy;
-    }
-
-    /**
-     * Get input array from the payload.
-     *
-     * @return array
-     */
-    public function getInput()
-    {
-        return $this->input;
-    }
-
-    /**
-     * Create a copy of the payload with output.
-     *
-     * @param  mixed  $output
-     * @param  bool  $wrap
-     *
-     * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
-     */
-    public function withOutput($output, bool $wrap = true)
-    {
-        $copy = clone $this;
-        $copy->output = $wrap && $this->outputWrapper ? [$this->outputWrapper => $this->getArrayableItems($output)] : $this->getArrayableItems($output);
-
-        return $copy;
-    }
-
-    /**
-     * Get output array from the payload.
-     *
-     * @return array
-     */
-    public function getOutput()
-    {
-        return $this->output;
-    }
-
-    /**
-     * Create a copy of the payload with messages array.
+     * Set the Payload messages.
      *
      * @param  array  $output
-     * @param  bool  $wrap
      *
-     * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
+     * @return $this
      */
-    public function withMessages(array $messages, bool $wrap = true)
+    public function setMessages(array $messages)
     {
-        $copy = clone $this;
-        $copy->messages = $wrap && $this->messagesWrapper ? [$this->messagesWrapper => $messages] : $messages;
-
-        return $copy;
+        return tap($this, function ($instance) use ($messages) {
+            $instance->messages = [$instance->messagesWrapper => $messages];
+        });
     }
 
     /**
@@ -136,122 +74,217 @@ class Payload implements PayloadContract
     }
 
     /**
-     * Set a wrapper for payload output.
+     * Set the Payload output.
      *
-     * @param  string  $wrapper
-     *
-     * @return $this
-     */
-    public function setOutputWrapper(string $wrapper)
-    {
-        $this->outputWrapper = $wrapper;
-
-        return $this;
-    }
-
-    /**
-     * Set a wrapper for payload output. Alias for setWrapper.
-     *
-     * @param  string  $wrapper
+     * @param  mixed  $output
+     * @param  string|null  $wrapper
      *
      * @return $this
      */
-    public function wrapOutput(string $wrapper)
+    public function setOutput($output, ? string $wrapper = null)
     {
-        return $this->setOutputWrapper($wrapper);
+        if ($wrapper) {
+            $this->setOutputWrapper($wrapper);
+        }
+
+        return tap($this, function ($instance) use ($output) {
+            $instance->output = $output;
+        });
     }
 
     /**
-     * Set a wrapper for payload output.
-     *
-     * @param  string  $wrapper
-     *
-     * @return $this
-     */
-    public function setInputWrapper(string $wrapper)
-    {
-        $this->inputWrapper = $wrapper;
-
-        return $this;
-    }
-
-    /**
-     * Set a wrapper for payload output. Alias for setWrapper.
-     *
-     * @param  string  $wrapper
-     *
-     * @return $this
-     */
-    public function wrapInput(string $wrapper)
-    {
-        return $this->setInputWrapper($wrapper);
-    }
-
-    /**
-     * Set a wrapper for payload output.
-     *
-     * @param  string  $wrapper
-     *
-     * @return $this
-     */
-    public function setMessagesWrapper(string $wrapper)
-    {
-        $this->messagesWrapper = $wrapper;
-
-        return $this;
-    }
-
-    /**
-     * Set a wrapper for payload output. Alias for setWrapper.
-     *
-     * @param  string  $wrapper
-     *
-     * @return $this
-     */
-    public function wrapMessages(string $wrapper)
-    {
-        return $this->setMessagesWrapper($wrapper);
-    }
-
-    /**
-     * Get the arrayable items.
-     *
-     * @param  mixed  $input
+     * Get the Payload output.
      *
      * @return array
      */
-    public function getArrayableItems($input)
+    public function getOutput()
     {
-        if (is_array($input)) {
-            return $input;
-        } elseif ($input instanceof Collection) {
-            return $input->all();
-        } elseif ($input instanceof Arrayable) {
-            return $input->toArray();
-        } elseif ($input instanceof Jsonable) {
-            return json_decode($input->toJson(), true);
-        } elseif ($input instanceof JsonSerializable) {
-            return $input->jsonSerialize();
-        } elseif ($input instanceof Traversable) {
-            return iterator_to_array($input);
-        }
-
-        return (array) $input;
+        return $this->output();
     }
 
     /**
-     * Handle dynamic property getters for a payload.
+     * Get the unwrapped Payload output. Alias for getOutput.
      *
-     * @param  mixed  $property
+     * @return array
+     */
+    public function getUnwrappedOutput()
+    {
+        return $this->getOutput();
+    }
+
+    /**
+     * Retrieve the Payload output and wrap it.
+     * Use the outputWrapper if it is set. Otherwise use 'data'.
+     *
+     * @return array
+     */
+    public function getwrappedOutput()
+    {
+        return $this->outputWrapper ? [$this->outputWrapper => $this->output] : ['data' => $this->output];
+    }
+
+    /**
+     * Set a wrapper for payload output.
+     *
+     * @param  string  $wrapper
+     *
+     * @return $this
+     */
+    private function setOutputWrapper(string $wrapper)
+    {
+        tap($this, function ($instance) use ($wrapper) {
+            $this->outputWrapper = $wrapper;
+        });
+    }
+
+    /**
+     * Get the wrapper for the output.
+     *
+     * @return string
+     */
+    public function getOutputWrapper()
+    {
+        return $this->outputWrapper;
+    }
+
+    /**
+     * Get the wrapper for the messages.
+     *
+     * @return string
+     */
+    public function getMessagesWrapper()
+    {
+        return $this->messagesWrapper;
+    }
+
+    /**
+     * Dynamically retrieve attributes on the OutputItem.
+     *
+     * @param  string  $key
      *
      * @return mixed
      */
-    public function __get($property)
+    public function __get($key)
     {
-        if ($this->outputWrapper) {
-            return isset($this->getOutput()[$this->outputWrapper][$property]) ? $this->getOutput()[$this->outputWrapper][$property] : null;
+        return $this->output[$key];
+    }
+
+    /**
+     * Convert the Payload instance to JSON.
+     *
+     * @param  int  $options
+     *
+     * @return string
+     */
+    public function toJson($options = 0)
+    {
+        return json_encode($this->jsonSerialize(), $options);
+    }
+
+    /**
+     * Convert the Payload into something JSON serializable.
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * Convert the Payload instance to an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $output = $this->outputWrapper || $this->messages ? $this->getwrappedOutput() : $this->output;
+
+        return $this->messages ? array_merge($output, $this->messages) : $output;
+    }
+
+    /**
+     * Determine if the given attribute exists.
+     *
+     * @param  mixed  $offset
+     *
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->$offset);
+    }
+
+    /**
+     * Get the value for a given offset.
+     *
+     * @param  mixed  $offset
+     *
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this->$offset;
+    }
+
+    /**
+     * Set the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * @param  mixed  $value
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->$offset = $value;
+    }
+
+    /**
+     * Unset the value for a given offset.
+     *
+     * @param  mixed  $offset
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->$offset);
+    }
+
+    /**
+     * Determine if an attribute exists on the Payload.
+     *
+     * @param  string  $key
+     *
+     * @return bool
+     */
+    public function __isset($key)
+    {
+        if (! $this->output) {
+            return false;
         }
 
-        return isset($this->getOutput()[$property]) ? $this->getOutput()[$property] : null;
+        return isset($this->output[$key]);
+    }
+
+    /**
+     * Unset an attribute on the Payload.
+     *
+     * @param  string  $key
+     */
+    public function __unset($key)
+    {
+        if (! $this->output) {
+            return;
+        }
+
+        unset($this->output[$key]);
+    }
+
+    /**
+     * Convert the Payload to its string representation.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toJson();
     }
 }

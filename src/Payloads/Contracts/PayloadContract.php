@@ -5,13 +5,13 @@ namespace BrightComponents\Common\Payloads\Contracts;
 interface PayloadContract extends Status
 {
     /**
-     * Create a copy of the payload with the status.
+     * Set the Payload status.
      *
      * @param  string  $status
      *
-     * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
+     * @return $this
      */
-    public function withStatus($status);
+    public function setStatus($status);
 
     /**
      * Get the status of the payload.
@@ -21,45 +21,37 @@ interface PayloadContract extends Status
     public function getStatus();
 
     /**
-     * Create a copy of the payload with input array.
-     *
-     * @param  array  $input
-     *
-     * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
-     */
-    public function withInput(array $input);
-
-    /**
-     * Get input array from the payload.
-     *
-     * @return array
-     */
-    public function getInput();
-
-    /**
-     * Create a copy of the payload with output.
+     * Set the Payload output.
      *
      * @param  mixed  $output
+     * @param  string|null  $wrapper
      *
-     * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
+     * @return $this
      */
-    public function withOutput($output);
+    public function setOutput($output, ? string $wrapper = null);
 
     /**
-     * Get output array from the payload.
+     * Get the Payload output.
      *
      * @return array
      */
     public function getOutput();
 
     /**
-     * Create a copy of the payload with messages array.
+     * Get the unwrapped Payload output.
+     *
+     * @return array
+     */
+    public function getUnwrappedOutput();
+
+    /**
+     * Set the Payload messages.
      *
      * @param  array  $output
      *
-     * @return \BrightComponents\Common\Payloads\Contracts\PayloadContract
+     * @return $this
      */
-    public function withMessages(array $messages);
+    public function setMessages(array $messages);
 
     /**
      * Get messages array from the payload.
@@ -69,29 +61,16 @@ interface PayloadContract extends Status
     public function getMessages();
 
     /**
-     * Set a wrapper for payload input.
+     * Get the wrapper for the output.
      *
-     * @param  string  $wrapper
-     *
-     * @return $this
+     * @return string
      */
-    public function setInputWrapper(string $wrapper);
+    public function getOutputWrapper();
 
     /**
-     * Set a wrapper for payload output.
+     * Get the wrapper for messages.
      *
-     * @param  string  $wrapper
-     *
-     * @return $this
+     * @return string
      */
-    public function setOutputWrapper(string $wrapper);
-
-    /**
-     * Set a wrapper for payload messages.
-     *
-     * @param  string  $wrapper
-     *
-     * @return $this
-     */
-    public function setMessagesWrapper(string $wrapper);
+    public function getMessagesWrapper();
 }
