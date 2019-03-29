@@ -41,8 +41,8 @@ public function index(Request $request)
 
     // As an alternative to "new Payload", you could resolve an instance via your controller's constructor.
     $payload = (new Payload)->setOutput($users)
-                   ->withMessages(['success' => 'Operation successful!'])
-                   ->withStatus($payload::STATUS_OK);
+                   ->setMessages(['success' => 'Operation successful!'])
+                   ->setStatus($payload::STATUS_OK);
 
     return response()->jsonWithPayload($payload);
     // return response()->viewWithPayload('dashboard', $payload, 'users');
