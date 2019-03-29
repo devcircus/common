@@ -77,3 +77,7 @@ All notable changes to BrightComponents/Common will be documented in this file
 ## 2.0.0 - 2019-03-28
 
 -   Completely overhauled how the Payload class functions.
+
+## 2.0.1 - 2019-03-29
+
+-   Fix typo in Payload getOutput() method.

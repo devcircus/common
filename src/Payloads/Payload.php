@@ -99,7 +99,7 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
      */
     public function getOutput()
     {
-        return $this->output();
+        return $this->output;
     }
 
     /**
