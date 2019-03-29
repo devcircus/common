@@ -32,64 +32,41 @@ If you have this functionality disabled, add the package service provider to you
 
 ## Usage
 Currently, the 'common' package simply provides a Payload class and a couple of ResponseFactory macros to help convert the Payload into either a json response or return a view with the payload data.
-Payloads can be used as follows:
+The provided example below, uses the Payload from within a Controller class.
 
 ```php
 public function index(Request $request)
 {
     $users = \App\Models\User::get();
 
-    $payload = (new Payload)->withInput($request->ids)
-                   ->withOutput($users)
+    // As an alternative to "new Payload", you could resolve an instance via your controller's constructor.
+    $payload = (new Payload)->setOutput($users)
                    ->withMessages(['success' => 'Operation successful!'])
                    ->withStatus($payload::STATUS_OK);
 
-    return; // you can access the output, messages, and the input with the 'getOutput', 'getMessages', and 'getInput' methods, and use these values in your response.
+    return response()->jsonWithPayload($payload);
+    // return response()->viewWithPayload('dashboard', $payload, 'users');
 }
 ```
-> The ```withOutput``` methods can receive any type(eg. strings, ints, Collections, Eloquent Collections, arrays, objects), which will be converted to an output array.
+Messages and status are optional. You can use these values in the response you return, however you wish.
 
-The input, output, messages, and status are all optional according to your needs. You can use these values in the response you return, however you wish.
-By default, each of these values are wrapped in an array with the following keys:
-
-- 'input': 'input'
-- 'output': 'data',
-- 'messages': 'messages'
-
-You can set the 'key' for each, using the following methods:
-```wrapInput(string $wrapper)```
-```wrapOutput(string $wrapper)```
-```wrapMessages(string $wrapper)```
-
-The values for input, output, and messages can be retrieved using the following methods:
-```getInput()```
-```getOutput()```
-```getMessages()```
-
-If you prefer not to wrap these values, you may pass false as the second parameter to the ```withInput``` ```withOutput``` and ```withMessages``` methods.
+To optionally wrap the output with a key, pass the key (string) as the second argument to ```setOutput```:
 ```php
-    $payload = (new Payload)->withInput($request->ids, $false)
-                   ->withOutput($users, $false)
-                   ->withMessages(['success' => 'Operation successful!'], $false)
-                   ->withStatus($payload::STATUS_OK);
+$payload->setOutput($users, 'data');
 ```
-
-The items in the 'output' array are available on the Payload instance via the magic __get method. So, if you choose to pass the Payload to your view, you can access the items from the output as follows:
-```html
-<h1>{{ $payload->name }}</h1>
-<span>{{ $payload->email }}</span>
-```
+> If you payload includes 'messages', the output will automatically be wrapped in a json response. If you do not provide a wrapping key, the key 'data' will be used.
 
 ### Response Helpers
-A couple of ResponseFactory macros are available to you, which makes sending payload responses, easier.
+As seen above, a couple of ResponseFactory macros are available to you, which makes sending payload responses, easier.
 For example:
 ```php
-response()->jsonWithPayload($payload, $withInput = false);
+$payload->setOutput($users, 'users')->setMessages(['success' => 'Operation Successful!']);
+response()->jsonWithPayload($payload);
 ```
-will yield the following structure (with the default keys):
+will yield the following structure:
 ```json
 {
-    "data": [
+    "users": [
         {
             "id": 1,
             "name": "Clayton Stone",
@@ -112,18 +89,110 @@ will yield the following structure (with the default keys):
     }
 }
 ```
-> Just pass true as the second argument to ```jsonWithPayload()``` if you would like to include the input in your response.
-
 The other helper is ```viewWithPayload()```:
 ```php
-response()->viewWithPayload('dashboard', $payload, $key = 'payload');
+response()->viewWithPayload('dashboard', $payload, 'payload');
 ```
-The default key that is passed to the view is 'payload', so you would access the data in your view as follows:
+The third argument is the string that you will use to refer to the data in your view. By default, 'payload' is used. Using the following:
+```php
+$payload->setOutput($users, 'users')->setMessages(['success' => 'Operation Successful!']);
+return response()->viewWithPayload('dashboard', $payload);
+```
+You would access your data as follows:
 ```html
 <h1>{{ $payload->name }}</h1>
 <span>{{ $payload->email }}</span>
 ```
-> To change the variable name, pass the name as a third argument to ```viewWithPayload``` method.
+However, you can set the variable name in the following manner:
+```php
+$payload->setOutput($users, 'users')->setMessages(['success' => 'Operation Successful!']);
+return response()->viewWithPayload('dashboard', $payload, 'user');
+```
+and access your data as follows:
+```html
+<h1>{{ $user->name }}</h1>
+<span>{{ $user->email }}</span>
+```
+
+> If you choose not to use the helper methods, refer to the PayloadContract below for the available methods on the Payload instance:
+```php
+<?php
+
+namespace BrightComponents\Common\Payloads\Contracts;
+
+interface PayloadContract extends Status
+{
+    /**
+     * Set the Payload status.
+     *
+     * @param  string  $status
+     *
+     * @return $this
+     */
+    public function setStatus($status);
+
+    /**
+     * Get the status of the payload.
+     *
+     * @return string
+     */
+    public function getStatus();
+
+    /**
+     * Set the Payload output.
+     *
+     * @param  mixed  $output
+     * @param  string|null  $wrapper
+     *
+     * @return $this
+     */
+    public function setOutput($output, ? string $wrapper = null);
+
+    /**
+     * Get the Payload output.
+     *
+     * @return array
+     */
+    public function getOutput();
+
+    /**
+     * Get the unwrapped Payload output.
+     *
+     * @return array
+     */
+    public function getUnwrappedOutput();
+
+    /**
+     * Set the Payload messages.
+     *
+     * @param  array  $output
+     *
+     * @return $this
+     */
+    public function setMessages(array $messages);
+
+    /**
+     * Get messages array from the payload.
+     *
+     * @return array
+     */
+    public function getMessages();
+
+    /**
+     * Get the wrapper for the output.
+     *
+     * @return string
+     */
+    public function getOutputWrapper();
+
+    /**
+     * Get the wrapper for messages.
+     *
+     * @return string
+     */
+    public function getMessagesWrapper();
+}
+```
 
 ### Testing
 
