@@ -54,7 +54,7 @@ To optionally wrap the output with a key, pass the key (string) as the second ar
 ```php
 $payload->setOutput($users, 'data');
 ```
-> If you payload includes 'messages', the output will automatically be wrapped in a json response. If you do not provide a wrapping key, the key 'data' will be used.
+> If your payload includes 'messages', the output will automatically be wrapped with a key. If you do not provide a wrapping key, the key 'data' will be used.
 
 ### Response Helpers
 As seen above, a couple of ResponseFactory macros are available to you, which makes sending payload responses, easier.
@@ -64,7 +64,7 @@ $payload->setOutput($users, 'users')->setMessages(['success' => 'Operation Succe
 response()->jsonWithPayload($payload);
 ```
 will yield the following structure:
-```json
+```
 {
     "users": [
         {
