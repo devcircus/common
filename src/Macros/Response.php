@@ -14,13 +14,8 @@ class Response
      */
     public function jsonWithPayload()
     {
-        return function (PayloadContract $payload, bool $withInput = false) {
-            $response = array_merge($payload->getOutput(), $payload->getMessages());
-            if ($withInput) {
-                $response = array_merge($response, $payload->getInput());
-            }
-
-            return ResponseFactory::json($response, $payload->getStatus());
+        return function (PayloadContract $payload) {
+            return ResponseFactory::json($payload, $payload->getStatus());
         };
     }
 
@@ -32,7 +27,7 @@ class Response
     public function viewWithPayload()
     {
         return function (string $view, PayloadContract $payload, string $key = 'payload') {
-            return ResponseFactory::view($view, [$key => $payload], $payload->getStatus());
+            return ResponseFactory::view($view, [$key => $payload->getUnwrappedOutput()], $payload->getStatus());
         };
     }
 }
