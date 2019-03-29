@@ -272,7 +272,7 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
     public function __unset($key)
     {
         if (! $this->output) {
-            return null;
+            return;
         }
 
         unset($this->output[$key]);
